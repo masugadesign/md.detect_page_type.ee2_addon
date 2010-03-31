@@ -1,7 +1,7 @@
 <?php
 /*
 ===============================================================================
-File: pi.md_detect_page_type.php
+File: pi.md_detect_page_type.php (EE2 version)
 Thread: http://expressionengine.com/forums/viewthread/92307/
 Docs: http://www.masugadesign.com/the-lab/scripts/md-detect-page-type/
 Misc Related Links:
@@ -26,34 +26,26 @@ var $return_data = "";
   
   function Md_detect_page_type()
   {
-      //global $TMPL, $IN, $FNS, $PREFS;
+    $this->EE =& get_instance();
+
+    $tagdata = $this->EE->TMPL->tagdata;
+    $conds = array();
+    $category_word = $this->EE->config->item("reserved_category_word");
+
+    if ($this->EE->TMPL->fetch_param('url_segment') !== FALSE)
+    {
+      $url_segment = $this->EE->TMPL->fetch_param('url_segment');
+    }
+    else
+    {
+      $url_segment = end($this->EE->uri->segments);
+    }
       
-      $this->EE =& get_instance();
-      
-      // $tagdata = $TMPL->tagdata;
-      $tagdata = $this->EE->TMPL->tagdata;
-      $conds = array();
-      //$category_word = $PREFS->ini("reserved_category_word");
-      $category_word = $this->EE->config->item("reserved_category_word");
-      
-      //if ($TMPL->fetch_param('url_segment') !== FALSE)
-      if ($this->EE->TMPL->fetch_param('url_segment') !== FALSE)
-      {
-        //$url_segment = $TMPL->fetch_param('url_segment');
-        $url_segment = $this->EE->TMPL->fetch_param('url_segment');
-      }
-      else
-      {
-        //$url_segment = end($IN->SEGS);
-        $url_segment = end($this->EE->uri->segments);
-      }
-      
-      $conds['pagination_page'] = (preg_match('/^[P][0-9]+$/i', $url_segment)) ? TRUE : FALSE;
-      $conds['category_page'] = (preg_match("/$category_word/", $url_segment)) ? TRUE : FALSE;
-      $conds['yearly_archive_page'] = (preg_match("/^\d{4}$/", $url_segment)) ? TRUE : FALSE;
+    $conds['pagination_page'] = (preg_match('/^[P][0-9]+$/i', $url_segment)) ? TRUE : FALSE;
+    $conds['category_page'] = (preg_match("/$category_word/", $url_segment)) ? TRUE : FALSE;
+    $conds['yearly_archive_page'] = (preg_match("/^\d{4}$/", $url_segment)) ? TRUE : FALSE;
 
     // Prep output
-    //$tagdata = $FNS->prep_conditionals($tagdata, $conds);
     $tagdata = $this->EE->functions->prep_conditionals($tagdata, $conds);
 
     // return
